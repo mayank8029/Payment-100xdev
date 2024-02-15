@@ -22,7 +22,7 @@ const userSignUp = async (req ,res)=>{
     
     const success = requireUser.safeParse(body).success;
 
-    console.log(success)
+   
       
     if(success==false){
       return res.status(400).send("not a valid input");
@@ -30,14 +30,14 @@ const userSignUp = async (req ,res)=>{
 
 
       const users = userSchema.userModel
-      console.log(users)
+      // console.log(users)
       const email = body.mail
 
-      const person = users.find({
+      const person = await users.findOne({
         mail:email
       })
 
-      console.log(person)
+       console.log(person)
   
 
 
@@ -53,12 +53,12 @@ const userSignUp = async (req ,res)=>{
       newUser.mail = body.mail ; 
       newUser.password = body.password;
       
-      console.log(newUser);
+      // console.log(newUser);
       
       await newUser.save()
       
       
-     return  res.status(200).send("longIn Successfull")
+     return  res.status(200).send("signup Successfull")
       
     } catch (error) {
         return res.status(400).send(error.message); 
@@ -72,6 +72,7 @@ const userSignUp = async (req ,res)=>{
 
 const userLogin = async (req , res)=>{
   try {
+    console.log(req.body)
     const email = req.body.mail 
     const password = req.body.password 
     const users = userSchema.userModel ; 
@@ -111,4 +112,42 @@ const userLogin = async (req , res)=>{
 }
 
 
-module.exports= {userSignUp , userLogin}
+const updateCredential = async (req , res)=>{
+    const credential = req.body ; 
+
+    const userModel = userSchema.userModel ; 
+
+    const myUser = await userModel.findOne({
+      mail:credential.mail 
+    })
+
+    if(!myUser._id) res.status(403).json("no user exist") ; 
+
+    if(myUser.password!=credential.password) res.status(403).json("Incorrect password") ; 
+
+    const updateFields = {
+      fname: credential.fname,
+      lname: credential.lname , 
+      password: credential.password
+    }
+
+    const options ={
+      new:true , 
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(myUser._id ,updateFields , options);
+
+    console.log(updatedUser)
+    return res.status(200).json(updatedUser); 
+
+
+
+}
+
+
+const getUsers = (req , res)=>{
+
+}
+
+
+module.exports= {userSignUp , userLogin , getUsers , updateCredential}
