@@ -1,10 +1,15 @@
 const {userModel} = require("../model/user")
 const jwt = require("jsonwebtoken")
+const zod = require("zod") ; 
+
+
 
 const authorization = async (req , res , next)=>{
 
     const token_bearer = req.headers.authorization
-  
+    if(!token_bearer || !token_bearer.startsWith("Bearer ")) {
+        return res.status(403).json({}) ; 
+    }
 
     const token = token_bearer.split(' ')[1] ; 
     console.log(token)

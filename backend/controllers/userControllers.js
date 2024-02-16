@@ -111,15 +111,28 @@ const userLogin = async (req , res)=>{
   }
 }
 
+const updatedBody = zod.object({
+  fname:zod.string().optional() , 
+  lname: zod.string().optional() , 
+  password:zod.string().optional()
+})
+ 
 
 const updateCredential = async (req , res)=>{
     const credential = req.body ; 
+    console.log(credential)
+    // console.log(updatedBody)
 
+    const success = updatedBody.safeParse(credential).success ; 
+    console.log(success)
+
+    if(!success) return res.status(404).json("invalid input"); 
+ 
     const userModel = userSchema.userModel ; 
 
     const myUser = await userModel.findOne({
       mail:credential.mail 
-    })
+    }) 
 
     if(!myUser._id) res.status(403).json("no user exist") ; 
 
