@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/register", userSignUp)
 router.get("/login" , userLogin)
-router.get('/user' , getUsers )
+router.get('/user' , getUsers ) 
 router.put('/updateCredential' , authorization, updateCredential)
 
 

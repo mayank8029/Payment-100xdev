@@ -12,6 +12,8 @@ const jwt = require('jsonwebtoken');
 const secret = "mynameismayank"
 const userSchema = require('../model/user') 
 
+const accountSchema = require("../model/Account")
+
 const userSignUp = async (req ,res)=>{
 
   try {
@@ -37,7 +39,7 @@ const userSignUp = async (req ,res)=>{
         mail:email
       })
 
-       console.log(person)
+      
   
 
 
@@ -46,7 +48,7 @@ const userSignUp = async (req ,res)=>{
       }
 
 
-      const newUser = new userSchema.userModel()
+      const newUser = new userSchema.userModel
       
       newUser.fname = body.fname ; 
       newUser.lname = body.lname ; 
@@ -55,7 +57,20 @@ const userSignUp = async (req ,res)=>{
       
       // console.log(newUser);
       
-      await newUser.save()
+      const currUser = await newUser.save()
+     
+
+      const newAccount = new accountSchema.accountModel
+
+      console.log("newAccount")
+      console.log(newAccount)
+
+      newAccount._id = currUser._id ; 
+      newAccount.balance = 1 + Math.random()*10000 
+
+      console.log(newAccount)
+
+       const currAccount = await newAccount.save() ; 
       
       
      return  res.status(200).send("signup Successfull")
@@ -158,7 +173,32 @@ const updateCredential = async (req , res)=>{
 }
 
 
-const getUsers = (req , res)=>{
+const getUsers = async(req , res)=>{
+  const fpara = req.query.filter || "";
+  console.log(fpara)
+  const uschema = userSchema.userModel ; 
+  const users = await uschema.find({
+    $or:[
+      {
+        fname:{
+          "$regex":fpara 
+        }
+
+      },{
+          lname:{
+            "$regex":fpara
+          }
+      }
+    ]
+
+    
+  })
+    
+    
+    
+  console.log(users)
+
+  res.json(users)
 
 }
 

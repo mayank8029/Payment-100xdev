@@ -12,12 +12,12 @@ connectDatabase();
 
 
 const userRoutes = require("./routes/userRoutes")
-const paymentRoutes = require("./routes/paymentRoutes")
+const accountBalanceRoutes = require("./routes/accountBalanceRoutes")
 
 
 
 app.use("/api/v1/user", userRoutes)
-app.use("/api/v1/user/payment" ,paymentRoutes)
+app.use("/api/v1/useraccount" ,accountBalanceRoutes)
 
 app.listen(port , ()=>{
     console.log(`backend is connected at ${port}`)
